@@ -1,0 +1,26 @@
+.App {
+    min-height: 100vh;
+
+    header {
+        min-height: 50px;
+        width: 100%;
+        background-color: #ebedee;
+        box-shadow: 0 2px 0 rgba($color: #000000, $alpha: 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2em;
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+        }
+    }
+
+    .wrapper {
+        margin-top: 2px;
+        background: linear-gradient(to top, #fdfbfb 0%, #ebedee 100%);
+        min-height: calc(100vh - 52px);
+    }
+}
