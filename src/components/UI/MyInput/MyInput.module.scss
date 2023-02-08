@@ -1,0 +1,12 @@
+.input {
+    padding: 4px 8px;
+    font-size: 1rem;
+    line-height: 1.1rem;
+    border: 1px solid rgb(100, 100, 100);
+    max-width: 333px;
+
+    &:focus {
+        border: 1px solid rgb(0, 0, 0);
+        outline: none;
+    }
+}

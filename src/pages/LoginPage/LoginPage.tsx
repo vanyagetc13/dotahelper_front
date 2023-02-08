@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router";
+import players from "../../store/players";
+import MyInput from "./../../components/UI/MyInput/MyInput";
+import MyButton from "./../../components/UI/MyButton/MyButton";
+
+import styles from "./LoginPage.module.scss"
 
 const LoginPage = () => {
     const nav = useNavigate()
@@ -14,27 +19,35 @@ const LoginPage = () => {
         if(res.status === 200){
             localStorage.setItem('user', JSON.stringify(res.data))
             nav("/randomizer")
+            players.isAuth = true;
         }
     }
+
+    useEffect(()=>{
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        if(user) {
+
+        }
+    },[])
     return (
-        <div>
-            <input
+        <div className={styles.wrapper}>
+            <MyInput
                 type="text"
                 placeholder="Введите Ваш Email"
                 value={email}
-                onChange={(e) => {
-                    setEmail(e.target.value);
+                change={(e) => {
+                    setEmail(e.currentTarget.value);
                 }}
             />
-            <input
+            <MyInput
                 type="password"
                 placeholder="Введите Ваш пароль"
                 value={password}
-                onChange={(e) => {
-                    setPassword(e.target.value);
+                change={(e) => {
+                    setPassword(e.currentTarget.value);
                 }}
             />
-            <button onClick={clickHandler}>Войти</button>
+            <MyButton click={clickHandler}>Войти</MyButton>
         </div>
     );
 };

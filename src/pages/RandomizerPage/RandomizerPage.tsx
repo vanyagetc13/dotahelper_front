@@ -1,92 +1,122 @@
 import React, { useEffect, useState } from "react";
-import PlayerList from "../../components/PlayerList/PlayerList";
+import PlayerList from "../../components/Lists/PlayerList";
 import players from "../../store/players";
 import styles from "./RandomizerPage.module.scss";
 import { useNavigate } from "react-router";
 import axios from "../../axios";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import IMove from "./../../types/movement";
+import PlayerCreation from "../../components/Modals/PlayerCreationModal/PlayerCreation";
+import MyButton from "../../components/UI/MyButton/MyButton";
+import RandomedPlayersModal from "../../components/Modals/RandomedPlayersModal/RandomedPlayersModal";
+import { observer } from "mobx-react-lite";
 
-const RandomizerPage = () => {
-    const [name, setName] = useState("");
-    const [steamId, setURL] = useState("");
-    const [mmr, setMMR] = useState("");
+const RandomizerPage = observer(() => {
+    const [playerCreationModalisOn, setPlayerCreationModalisOn] =
+        useState(false);
+    const [randomedPlayerModalIsOn, setRandomedPlayerModalIsOn] =
+        useState(false);
 
     const nav = useNavigate();
+
+    const onDragEndHandle = (result: DropResult) => {
+        if (!result.destination) return;
+        const from: IMove = {
+            index: result.source.index,
+            list: result.source.droppableId,
+        };
+        const to: IMove = {
+            index: result.destination.index,
+            list: result.destination.droppableId,
+        };
+        players.move(from, to);
+    };
+
+    const playerCreationHandler = () => {
+        setPlayerCreationModalisOn(true);
+    };
+    const playerCreationAbortion = () => {
+        setPlayerCreationModalisOn(false);
+    };
+
+    const randomPlayersHandler = () => {
+        const response = players.randomPlayers();
+        console.log(response);
+        setRandomedPlayerModalIsOn(true);
+    };
+    const randomPlayerAbortion = () => {
+        setRandomedPlayerModalIsOn(false);
+    };
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user") || "null");
         if (user) {
-            axios.defaults.headers['authorization'] = user.token
+            axios.defaults.headers["authorization"] = user.token;
             players.fetchPlayers();
-        }
-        else nav("/login");
+        } else nav("/login");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Имя"
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.target.value);
-                    }}
+            {playerCreationModalisOn && (
+                <PlayerCreation
+                    abort={playerCreationAbortion}
+                    title={"Создание персонажа"}
                 />
-                <input
-                    type="text"
-                    placeholder="steamId"
-                    value={steamId}
-                    onChange={(e) => {
-                        setURL(e.target.value);
-                    }}
+            )}
+            {randomedPlayerModalIsOn && (
+                <RandomedPlayersModal
+                    abort={randomPlayerAbortion}
+                    title={"random.org выбрал команды"}
                 />
-                <input
-                    type="text"
-                    value={mmr}
-                    placeholder="mmr"
-                    onChange={(e) => {
-                        const text = e.target.value;
-                        if (text.match(/^[0-9]*$/)) {
-                            setMMR(text);
-                        }
-                    }}
-                />
-                <button
-                    onClick={() => {
-                        if (name && steamId && mmr) {
-                            const newPlayer = {
-                                fullName: name,
-                                steamId: steamId,
-                                mmr: parseInt(mmr),
-                            };
-                            axios.post("players", newPlayer).then((res)=>{
-                                if(res.status === 200) {
-
-                                }
-                            }).catch((err)=>{
-                                console.log(err);
-                            })
-
-
-                            // if(res.status === 200) players.addPlayer(newPlayer)
-                        }
-                    }}
-                >
-                    Create
-                </button>
-            </div>
-            <div className={styles.wrapper}>
-                <div className={styles.column}>
-                    <h4>Переместите сюда игроков.</h4>
+            )}
+            <DragDropContext onDragEnd={onDragEndHandle}>
+                <div className={styles.wrapper}>
+                    <div className={styles.column}>
+                        <div>
+                            <h4>Переместите сюда игроков</h4>
+                            <Droppable droppableId="randomList">
+                                {(provided) => (
+                                    <div
+                                        className={styles.list}
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                    >
+                                        <PlayerList list={players.randomPlayerList} />
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </div>
+                        <MyButton click={randomPlayersHandler}>
+                            Сгенерировать случайные команды
+                        </MyButton>
+                    </div>
+                    <div className={styles.column}>
+                        <div>
+                            <h4>Игроки</h4>
+                            <Droppable droppableId="playerList">
+                                {(provided) => (
+                                    <div
+                                        className={styles.list}
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                    >
+                                        <PlayerList list={players.playerList} />
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </div>
+                        <MyButton click={playerCreationHandler}>
+                            Добавить игрока
+                        </MyButton>
+                    </div>
                 </div>
-                <div className={styles.column}>
-                    <h4>Игроки</h4>
-                    <PlayerList />
-                </div>
-            </div>
+            </DragDropContext>
         </>
     );
-};
+});
 
 export default RandomizerPage;

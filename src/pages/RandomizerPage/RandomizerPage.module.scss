@@ -6,19 +6,34 @@
 
     .column {
         margin-top: 10px;
-        width: 36%;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        border: 1px solid black;
+        justify-content: space-between;
+        width: 25%;
         border-radius: 3px;
         min-height: 600px;
         max-height: 900px;
-    }
-    h4 {
-        margin: 0;
-        margin: 8px 0;
-        font-weight: 500;
-        font-size: 1.1em;
+        border: 1px solid rgb(80, 80, 80);
+
+        h4 {
+            margin: 0;
+            margin: 8px;
+            font-weight: 500;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .list {
+            // background-color: aquamarine;
+            width: 100%;
+            min-height: 150px;
+        }
+
+        button {
+            margin: 8px;
+            width: fit-content;
+            display: flex;
+            align-self: center;
+            font-size: 1rem;
+        }
     }
 }

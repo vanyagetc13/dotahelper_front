@@ -1,0 +1,37 @@
+h4 {
+    font-size: 1.35rem;
+    margin: 0 0 20px;
+    font-weight: 400;
+    color: #161618;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    gap: 7px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+h5 {
+    margin: 0;
+    margin-top: 5px;
+    font-weight: normal;
+    font-size: 1.05rem;
+}
+button {
+    padding: 0;
+    font-size: 1.1rem;
+}
+
+.error {
+    color: rgb(170, 0, 0);
+    font-size: 0.7rem;
+    line-height: 1.1rem;
+    display: flex;
+    flex-direction: column-reverse;
+}

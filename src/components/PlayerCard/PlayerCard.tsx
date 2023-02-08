@@ -4,16 +4,17 @@ import { IPlayerInfo } from "./../../types/player";
 
 interface PlayerCardProps {
     playerinfo: IPlayerInfo;
+    innerRef: any;
+    rest?: any[];
 }
 
-const PlayerCard = ({playerinfo}:PlayerCardProps) => {
+function PlayerCard ({playerinfo, innerRef, ...rest}:PlayerCardProps){
     const {fullName} = playerinfo;
     return (
-        <div className={styles.card}>
+        <div className={styles.card} ref={innerRef} {...rest}>
             <div>
                 <span>{fullName}</span>
             </div>
-            <button> + </button>
         </div>
     );
 };
